@@ -14,9 +14,15 @@ export default function TopStudentsChart({
     totalSessions: number;
     uniqueIPs: number;
     lastOnline: string;
+    Top: number;
   }[];
 }) {
   const router = useRouter();
+
+  data.forEach((item, index) => {
+    item.Top = index + 1;
+  })
+  console.log(data);
   return (
     <div className="w-full h-96 bg-white dark:bg-gray-900 p-4 rounded shadow">
       <h2 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">Top Students</h2>
@@ -52,12 +58,29 @@ export default function TopStudentsChart({
               border: '1px solid #374151',
               borderRadius: '6px',
               color: '#F9FAFB',
+              padding: '10px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
             }}
-            formatter={(value, name) => [`${value}`, name]}
+            formatter={(value, name) => [
+              <span key="value" className="font-semibold text-blue-300">{value}</span>, 
+              <span key="name" className="text-gray-300">{name}</span>
+            ]}
             labelFormatter={(label) => {
               const user = data.find((u) => u.username === label);
-              return `${user?.fullName} (${user?.username}) (${user?.totalDuration})`;
+              return (
+                <span className="font-medium mb-1 border-b border-gray-600 pb-1 block">
+                  <span className="text-blue-400">#{user?.Top}</span>
+                  <span className="mx-1">·</span>
+                  <span className="text-white">{user?.fullName}</span>
+                  <span className="block text-xs text-gray-400 mt-1">
+                    @{user?.username}
+                    <span className="mx-1">·</span>
+                    {user?.totalDuration} total
+                  </span>
+                </span>
+              );
             }}
+            cursor={{ fill: 'rgba(59, 130, 246, 0.2)' }}
           />
           <Legend
             wrapperStyle={{

@@ -80,7 +80,7 @@ export default function ActivityPage() {
                         <div className="px-8 py-4 flex items-center">
                             <span className="mr-4 text-lg font-medium uppercase tracking-wider text-white">Sort by:</span>
                             <select 
-                                className="px-4 py-2 text-lg font-medium bg-gray-900 text-white hover:bg-blue-800 transition-colors duration-300 rounded border border-gray-700"
+                                className="px-4 py-2 text-lg font-medium bg-gray-900 text-white hover:bg-blue-800 transition-colors duration-300 rounded border border-gray-700 md:mr-3 sm:mr-3"
                                 onChange={(e) => {
                                     const sortValue = e.target.value;
                                     setAnimating(true);

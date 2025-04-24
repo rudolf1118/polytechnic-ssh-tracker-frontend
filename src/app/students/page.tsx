@@ -99,38 +99,35 @@ export default function StudentsPage() {
                     {displayStudents.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {displayStudents.map((student: any, index: number) => (
-                                <div key={student._id || index} className="flex bg-black flex-col divide-y divide-gray-800 bg-gradient-to-r transition-all duration-500 transform hover:scale-[1.03] rounded-xl overflow-hidden shadow-lg cursor-pointer group relative"
-                                    onClick={() => router.push(`/profile/${student._id}`)}>
-                                    <div className="absolute inset-0 bg-opacity-70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
-                                        <p className="text-white text-xl font-bold">Click to see {student?.firstNameEN}'s profile</p>
+                                <div key={student._id || index} className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] cursor-pointer group relative">
+                                    <div 
+                                        className="absolute inset-0 bg-opacity-75 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10"
+                                        onClick={() => router.push(`/profile/${student._id}`)}
+                                    >
+                                        <p className="text-white text-lg font-bold">View {student.firstNameEN}'s profile</p>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">Username</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.username}</div>
+                                    
+                                    {/* Card Header */}
+                                    <div className="bg-blue-900 px-3 py-2 text-white">
+                                        <h3 className="font-medium truncate">{student?.firstNameEN} {student?.lastNameEN}</h3>
                                     </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">First Name (AM)</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.firstNameAM}</div>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">Last Name (AM)</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.lastNameAM}</div>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">First Name (EN)</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.firstNameEN}</div>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">Last Name (EN)</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.lastNameEN}</div>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">Group</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?.group}</div>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider w-full bg-gray-900">ID</div>
-                                        <div className="px-4 py-3 whitespace-nowrap w-full text-lg">{student?._id}</div>
+                                    
+                                    {/* Card Content */}
+                                    <div className="p-3 text-white text-sm">
+                                        <div className="flex justify-between border-b border-gray-700 py-1">
+                                            <span className="text-gray-400">Username:</span>
+                                            <span className="font-medium truncate">{student?.username}</span>
+                                        </div>
+                                        
+                                        <div className="flex justify-between border-b border-gray-700 py-1">
+                                            <span className="text-gray-400">Group:</span>
+                                            <span className="font-medium">{student?.group}</span>
+                                        </div>
+                                        
+                                        <div className="flex justify-between py-1">
+                                            <span className="text-gray-400">ID:</span>
+                                            <span className="font-medium text-xs truncate">{student?._id}</span>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
