@@ -4,19 +4,21 @@ import { useEffect, useState } from "react";
 import { activityApi } from "@/api/activity/activity.api";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import { parseDuration, getStartDate } from "@/utils/dates";
+import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/Protected";
 
-export default function MyActivityPage() {
+export default function ActivityPage() {
     const [activity, setActivity] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showAllActivities, setShowAllActivities] = useState<boolean>(false);
     const [animating, setAnimating] = useState<boolean>(false);
+    const { studentId } = useParams();
     
     useEffect(() => {
         const fetchActivity = async () => {
             try {
                 setLoading(true);
-                const res = await activityApi.getMyActivity();
+                const res = await activityApi.getActivityById(studentId as string);
                 console.log(res);
                 setActivity(res);
             } catch (error) {
@@ -26,7 +28,7 @@ export default function MyActivityPage() {
             }
         };
         fetchActivity();
-    }, []);
+    }, [studentId]);
 
     const handleToggleActivities = () => {
         setAnimating(true);
@@ -40,7 +42,7 @@ export default function MyActivityPage() {
         <ProtectedRoute>
             <div className="flex flex-col items-center justify-center min-h-screen p-4">
                 {loading && <LoadingScreen/>}
-                <div className="w-full max-w-6xl bg-black overflow-hidden mt-5 shadow-inner rounded-lg transition-all duration-500 transform hover:scale-[1.01]">
+            <div className="w-full max-w-6xl bg-black overflow-hidden mt-5 shadow-inner rounded-lg transition-all duration-500 transform hover:scale-[1.01]">
                 <div className="w-full text-white">
                     <div className="flex flex-col divide-y divide-gray-800 bg-gradient-to-r">
                         <div className="flex flex-col sm:flex-row">

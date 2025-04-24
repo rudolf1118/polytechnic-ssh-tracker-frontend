@@ -3,28 +3,29 @@ import { useEffect, useState } from "react";
 import { studentApi } from "@/api/student/student.api";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/Protected";
 
-export default function ProfilePage() {
+export default function ProfilePageByID() {
     const [profile, setProfile] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
+    const { id } = useParams();
 
     useEffect(() => {
         const fetchProfile = async () => {
             setLoading(true);
-            const res = await studentApi.getMyProfile();
+            const res = await studentApi.getStudentById(id as string);
             setProfile(res);
             setLoading(false);
         };
         fetchProfile();
-    }, []);
+    }, [id]);
 
     return (
         <ProtectedRoute>
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 overflow-hidden mt-5 shadow-inner rounded-lg transition-all duration-500 transform hover:translate-y-[-5px]">
-            {loading && <LoadingScreen/>}
+        <div className="min-h-screen w-full overflow-x-hidden flex flex-col items-center justify-center p-4">  
+          {loading && <LoadingScreen/>}
             <div className="w-full max-w-6xl bg-black rounded-lg shadow-2xl overflow-hidden">
                 <div className="w-full text-white">
                     <div className="flex flex-col divide-y divide-gray-800">
@@ -57,7 +58,7 @@ export default function ProfilePage() {
             </div>
             <div className="w-full max-w-6xl bg-black rounded-lg shadow-2xl overflow-hidden mt-6">
                 <button 
-                    onClick={() => router.push('/my-activity')}
+                    onClick={() => router.push(`/activities/${id}`)}
                     type="button"
                 className="w-full py-4 text-lg font-medium uppercase tracking-wider bg-blue-900 text-white hover:bg-blue-800 transition-colors duration-300 cursor-pointer">
                     View Your Activity History

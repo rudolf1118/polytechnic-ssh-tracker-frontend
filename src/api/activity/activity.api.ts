@@ -16,8 +16,18 @@ export class ActivityApi {
 
     async getActivityById(id: string): Promise<any> {
         try {
-            const res = await axiosAuth.get(`/activity/${id}`);
+            const res = await axiosAuth.get(`/activity/search?studentId=${id}`);
             if (!res || !res.data) throw new Error("Failed to get activity");
+            return res?.data?.data[0];
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    async getTopParticipants(limit: number = 10): Promise<any> {
+        try {
+            const res = await axiosAuth.get(`/activity/getTopParticipants?limit=${limit}`);
+            if (!res || !res.data) throw new Error("Failed to get top participants");
             return res?.data?.data;
         } catch(e) {
             throw e;

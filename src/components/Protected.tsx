@@ -1,5 +1,5 @@
 'use client';
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
 import LoadingScreen from "./common/LoadingScreen";

@@ -20,7 +20,7 @@ axiosAuth.interceptors.request.use((config) => {
 axiosAuth.interceptors.response.use(
     (res) => res,
     (error) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 401 || error.response?.statusCode === 401 || error.response?.status === 403 || error.response?.statusCode === 403) {
         localStorage.removeItem("token");
       }
       return Promise.reject(error);

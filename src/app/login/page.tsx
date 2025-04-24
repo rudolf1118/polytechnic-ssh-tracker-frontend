@@ -4,6 +4,8 @@ import { useState } from "react";
 import { authApi } from "@/api/index";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import { useAuth } from "@/context/AuthContext";
+import ProtectedRoute from "@/components/Protected";
 
 interface LoginParams {
   username: string;
@@ -15,11 +17,13 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const { setIsAuthenticated } = useAuth();
   const onSubmit = async (data: LoginParams) => {
     try {
       setLoading(true);
       await authApi.login(data);
-      router.push("/")
+      setIsAuthenticated(true);
+      router.push("/");
     } catch (err) {
       setError("Password or Username is incorrect");
     } finally {
@@ -28,8 +32,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-black via-blue-950 to-blue-950 px-4 w-full overflow-hidden mt-5 shadow-inner rounded-lg transition-all duration-500 transform hover:scale-[1.01]">
-      <div className="w-full max-w-md bg-gray-100 p-8 rounded-xl shadow-lg">
+    <ProtectedRoute>
+    <div className="min-h-screen w-full overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-900 to-black">
+        <div className="w-full max-w-md bg-gray-100 p-8 rounded-xl shadow-lg">
         {loading && <LoadingScreen />} 
         <h1 className="text-3xl font-bold text-center text-black mb-8">Sign In</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -63,5 +68,6 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+    </ProtectedRoute>
   );
 }

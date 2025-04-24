@@ -1,17 +1,16 @@
 'use client';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/context/AuthContext';
 import ProtectedRoute from './Protected';
 import { authApi } from '@/api/auth/auth.api';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
@@ -52,11 +51,11 @@ export default function Navbar() {
       <div className="hidden md:flex gap-4 lg:gap-6">
         {isAuthenticated ? (
           <>
-          <Link href="/profile" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname === '/profile' ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>My Profile</Link>
+          <Link href="/profile" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname === '/profile' ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>Profile</Link>
           <Link href="/my-activity" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname === '/my-activity' ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>My Activity</Link>
-          <Link href="/students" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname === '/students' ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>Students</Link>
-          <Link href="/activity" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname === '/activity' ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>Activities</Link>
-          <Link href="/logout" className="nav-link hover:text-red-300 transition-all duration-300 hover:scale-105 " onClick={() => authApi.logout()}>Logout</Link>
+          <Link href="/students" className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname.includes('/students') ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>Students</Link>
+          <Link href="/top-students " className={`nav-link hover:text-gray-200 transition-all duration-300 hover:scale-105 ${pathname.includes('/top-students') ? 'text-blue-400 font-semibold border-b-2 border-blue-400' : ''}`}>Top Students</Link>
+          <Link href="/logout" className="nav-link hover:text-red-300 transition-all duration-300 hover:scale-105 " onClick={() => {authApi.logout(); setIsAuthenticated(false);}}>Logout</Link>
         </>
         ) : (
           <>
@@ -70,15 +69,15 @@ export default function Navbar() {
         <div className="absolute top-full left-0 right-0 bg-gray-800 p-4 md:hidden flex flex-col gap-4 shadow-lg animate-fadeIn transition-all duration-300 transform origin-top">
           {isAuthenticated ? (
             <>
-              <Link href="/profile" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/profile' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '50ms'}}>My Profile</Link>
-              <Link href="/my-activity" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/my-activity' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '100ms'}}>My Activity</Link>
-              <Link href="/students" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/students' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '100ms'}}>Students</Link>
-              <Link href="/activity" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/activity' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '150ms'}}>Activities</Link>
-              <Link href="/logout" className="nav-link text-red-400 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-red-300 font-medium animate-slideIn border-l-2 border-red-500 pl-2" style={{animationDelay: '250ms'}} onClick={() => authApi.logout()}>Logout</Link>
+              <Link href="/profile" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/profile' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '50ms'}} onClick={() => setMobileMenuOpen(false)}>My Profile</Link>
+              <Link href="/my-activity" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/my-activity' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '100ms'}} onClick={() => setMobileMenuOpen(false)}>My Activity</Link>
+              <Link href="/students" className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname === '/students' ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '100ms'}} onClick={() => setMobileMenuOpen(false)}>Students</Link>
+              <Link href="/top-students " className={`nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-blue-300 ${pathname.includes('/top-students') ? 'text-blue-400 font-semibold' : ''} animate-slideIn`} style={{animationDelay: '100ms'}} onClick={() => setMobileMenuOpen(false)}>Top Students</Link>
+              <span className="nav-link text-red-400 py-2 transform transition-all duration-300 hover:translate-x-2 hover:text-red-300 font-medium animate-slideIn border-l-2 border-red-500 pl-2" style={{animationDelay: '250ms'}} onClick={() => {authApi.logout(); setMobileMenuOpen(false);}}>Logout</span>
             </>
           ) : (
             <>
-              <Link href="/login" className="nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 animate-slideIn" style={{animationDelay: '50ms'}}>Login</Link>
+              <Link href="/login" className="nav-link hover:text-blue-300 py-2 transform transition-all duration-300 hover:translate-x-2 animate-slideIn" style={{animationDelay: '50ms'}} onClick={() => setMobileMenuOpen(false)}>Login</Link>
             </>
           )}
         </div>
