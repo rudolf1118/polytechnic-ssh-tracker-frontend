@@ -5,6 +5,7 @@ import { studentApi } from "@/api/student/student.api";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/Protected";
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function StudentsPage() {
     const [students, setStudents] = useState<any[]>([]);
@@ -61,85 +62,112 @@ export default function StudentsPage() {
 
     return (
         <ProtectedRoute>
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 w-full mt-5">
-            {loading && <LoadingScreen/>}
-            <div className="w-full max-w-6xl flex items-center justify-center">
-                <input 
-                    type="text" 
-                    placeholder="Search" 
-                    value={search}
-                    className="w-full max-w-6xl p-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:border-blue-900 transition-all duration-300 focus:outline-none" 
-                    onChange={(e) => handleSearch(e.target.value)} 
-                />
-                <div className="w-1/6 max-w-l flex items-center justify-center mx-3">
-                    <select 
-                        name="group" 
-                        id="group" 
-                        value={currentGroup}
-                        className="w-full max-w-6xl p-2 rounded-lg bg-gray-900 text-white"
-                        onChange={async (e) => await fetchStudents(e.target.value as "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all")}
-                    >
-                        <option value="">My Group</option>
-                        <option value="lab-1">Lab 1</option>
-                        <option value="lab-2">Lab 2</option>
-                        <option value="lab-3">Lab 3</option>
-                        <option value="lab-4">Lab 4</option>
-                        <option value="all">All</option>
-                    </select>
-                </div>
-                <button 
-                    className="bg-blue-900 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-800 transition-colors" 
-                    onClick={() => handleSearch(search)}
+            <AnimatePresence>
+                <motion.div
+                    className="flex flex-col items-center justify-center min-h-screen p-4 w-full mt-5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
                 >
-                    Search
-                </button>
-            </div>
-            <div className="w-full max-w-6xl overflow-hidden mt-5 shadow-inner rounded-lg">
-                <div className="w-full text-white">
-                    {displayStudents.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {displayStudents.map((student: any, index: number) => (
-                                <div key={student._id || index} className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] cursor-pointer group relative">
-                                    <div 
-                                        className="absolute inset-0 bg-opacity-75 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10"
-                                        onClick={() => router.push(`/profile/${student._id}`)}
-                                    >
-                                        <p className="text-white text-lg font-bold">View {student.firstNameEN}'s profile</p>
-                                    </div>
-                                    
-                                    {/* Card Header */}
-                                    <div className="bg-blue-900 px-3 py-2 text-white">
-                                        <h3 className="font-medium truncate">{student?.firstNameEN} {student?.lastNameEN}</h3>
-                                    </div>
-                                    
-                                    {/* Card Content */}
-                                    <div className="p-3 text-white text-sm">
-                                        <div className="flex justify-between border-b border-gray-700 py-1">
-                                            <span className="text-gray-400">Username:</span>
-                                            <span className="font-medium truncate">{student?.username}</span>
-                                        </div>
-                                        
-                                        <div className="flex justify-between border-b border-gray-700 py-1">
-                                            <span className="text-gray-400">Group:</span>
-                                            <span className="font-medium">{student?.group}</span>
-                                        </div>
-                                        
-                                        <div className="flex justify-between py-1">
-                                            <span className="text-gray-400">ID:</span>
-                                            <span className="font-medium text-xs truncate">{student?._id}</span>
-                                        </div>
-                                    </div>
+                    {loading && <LoadingScreen />}
+                    <div className="w-full max-w-6xl flex items-center justify-center">
+                        <input 
+                            type="text" 
+                            placeholder="Search" 
+                            value={search}
+                            className="w-full max-w-6xl p-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:border-blue-900 transition-all duration-300 focus:outline-none" 
+                            onChange={(e) => handleSearch(e.target.value)} 
+                        />
+                        <div className="w-1/6 max-w-l flex items-center justify-center mx-3">
+                            <motion.select 
+                                name="group" 
+                                id="group" 
+                                value={currentGroup}
+                                className="w-full max-w-6xl p-2 rounded-lg bg-gray-900 text-white"
+                                onChange={async (e) => {
+                                    await fetchStudents(e.target.value as "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all");
+                                }}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <option value="">My Group</option>
+                                <option value="lab-1">Lab 1</option>
+                                <option value="lab-2">Lab 2</option>
+                                <option value="lab-3">Lab 3</option>
+                                <option value="lab-4">Lab 4</option>
+                                <option value="all">All</option>
+                            </motion.select>
+                        </div>
+                        <button 
+                            className="bg-blue-900 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-800 transition-colors" 
+                            onClick={() => handleSearch(search)}
+                        >
+                            Search
+                        </button>
+                    </div>
+                    <div className="w-full max-w-6xl overflow-hidden mt-5 shadow-inner rounded-lg">
+                        <div className="w-full text-white">
+                            {displayStudents.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {displayStudents.map((student: any, index: number) => (
+                                        <motion.div 
+                                            key={student._id || index} 
+                                            className="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] cursor-pointer group relative"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.5 }}
+                                        >
+                                            <div 
+                                                className="absolute inset-0 bg-opacity-75 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10"
+                                                onClick={() => router.push(`/profile/${student._id}`)}
+                                            >
+                                                <p className="text-white text-lg font-bold">View {student.firstNameEN}'s profile</p>
+                                            </div>
+                                            
+                                            {/* Card Header */}
+                                            <div className="bg-blue-900 px-3 py-2 text-white">
+                                                <h3 className="font-medium truncate">{student?.firstNameEN} {student?.lastNameEN}</h3>
+                                            </div>
+                                            
+                                            {/* Card Content */}
+                                            <div className="p-3 text-white text-sm">
+                                                <div className="flex justify-between border-b border-gray-700 py-1">
+                                                    <span className="text-gray-400">Username:</span>
+                                                    <span className="font-medium truncate">{student?.username}</span>
+                                                </div>
+                                                
+                                                <div className="flex justify-between border-b border-gray-700 py-1">
+                                                    <span className="text-gray-400">Group:</span>
+                                                    <span className="font-medium">{student?.group}</span>
+                                                </div>
+                                                
+                                                <div className="flex justify-between py-1">
+                                                    <span className="text-gray-400">ID:</span>
+                                                    <span className="font-medium text-xs truncate">{student?._id}</span>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
                                 </div>
-                            ))}
+                            ) : !loading && (
+                                <motion.div 
+                                    className="p-8 text-center text-lg"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    No students found
+                                </motion.div>
+                            )}
                         </div>
-                    ) : !loading && (
-                        <div className="p-8 text-center text-lg">
-                            No students found
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
+                    </div>
+                </motion.div>
+            </AnimatePresence>
         </ProtectedRoute>
     )
 }

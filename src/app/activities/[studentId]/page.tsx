@@ -6,12 +6,12 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 import { parseDuration, getStartDate } from "@/utils/dates";
 import { useParams } from "next/navigation";
 import ProtectedRoute from "@/components/Protected";
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ActivityPage() {
     const [activity, setActivity] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [showAllActivities, setShowAllActivities] = useState<boolean>(false);
-    const [animating, setAnimating] = useState<boolean>(false);
     const { studentId } = useParams();
     
     useEffect(() => {
@@ -30,139 +30,164 @@ export default function ActivityPage() {
     }, [studentId]);
 
     const handleToggleActivities = () => {
-        setAnimating(true);
-        setTimeout(() => {
-            setShowAllActivities(!showAllActivities);
-            setAnimating(false);
-        }, 200);
+        setShowAllActivities(!showAllActivities);
     };
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col items-center justify-center min-h-screen p-4">
-                {loading && <LoadingScreen/>}
-            <div className="w-full max-w-6xl bg-black overflow-hidden mt-5 shadow-inner rounded-lg transition-all duration-500 transform hover:scale-[1.01]">
-                <div className="w-full text-white">
-                    <div className="flex flex-col divide-y divide-gray-800 bg-gradient-to-r">
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900 ">Username</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.username}</div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900">First Name</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.firstName}</div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900">Last Name</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.lastName}</div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900">Duration of Activity</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.durationOfActivity}</div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900">Last Online</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.lastOnline}</div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="px-8 py-4 text-left text-sm font-medium uppercase tracking-wider w-full sm:w-1/6 bg-gray-900">ID</div>
-                            <div className="px-8 py-4 whitespace-nowrap w-full sm:w-2/3 text-lg">{activity?.studentId}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            {activity?.activities && activity.activities.length > 0 && (
-                <div className="w-full max-w-6xl bg-black rounded-lg shadow-2xl overflow-hidden mt-6">
-                    <div className="w-full text-white">
-                        <h2 className="px-8 py-4 text-xl font-bold bg-gray-900">Activity History</h2>
-                        <div className="px-8 py-4 flex items-center">
-                            <span className="mr-4 text-lg font-medium uppercase tracking-wider text-white">Sort by:</span>
-                            <select 
-                                className="px-4 py-2 text-lg font-medium bg-gray-900 text-white hover:bg-blue-800 transition-colors duration-300 rounded border border-gray-700 md:mr-3 sm:mr-3"
-                                onChange={(e) => {
-                                    const sortValue = e.target.value;
-                                    setAnimating(true);
-                                    setTimeout(() => {
-                                        const sortedActivities = [...activity.activities].sort((a, b) => {
-                                            if (sortValue === "date_desc") {
-                                                return Number(getStartDate(b.date)) - Number(getStartDate(a.date));
-                                            }
-                                            if (sortValue === "date_asc") {
-                                                return Number(getStartDate(a.date)) - Number(getStartDate(b.date));
-                                            }
-                                            if (sortValue === "duration_desc") return parseDuration(b.duration) - parseDuration(a.duration);
-                                            if (sortValue === "duration_asc") return parseDuration(a.duration) - parseDuration(b.duration);
-                                            if (sortValue === "hostname") return a.hostname.localeCompare(b.hostname);
-                                            if (sortValue === "ip") return a.ip.localeCompare(b.ip);
-                                            return 0;
-                                        });
-                                        setActivity({ ...activity, activities: sortedActivities });
-                                        setAnimating(false);
-                                    }, 300);
-                                }}
-                            >
-                                <option value="date_desc">Date (Newest First)</option>
-                                <option value="date_asc">Date (Oldest First)</option>
-                                <option value="duration_desc">Duration (Longest First)</option>
-                                <option value="duration_asc">Duration (Shortest First)</option>
-                                <option value="hostname">Hostname</option>
-                                <option value="ip">IP Address</option>
-                            </select>
-                        </div>
-                        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 p-4 transition-all duration-500 ${animating ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
-                            {(showAllActivities ? activity.activities : activity.activities.slice(0, 2)).map((item: any, index: number) => (
-                                <div 
-                                    key={item._id || index} 
-                                    className={`flex flex-col p-4 border border-gray-800 rounded-lg bg-gray-900/50 hover:bg-gray-800/50 transition-all duration-300 ${showAllActivities || animating ? 'animate-fadeIn' : ''}`}
-                                    style={{animationDelay: `${index * 100}ms`}}
-                                >
-                                    <div className="grid grid-cols-2 gap-2 mb-2">
-                                        <div className="text-sm font-medium uppercase tracking-wider text-gray-400">IP:</div>
-                                        <div className="text-white">{item.ip}</div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2 mb-2">
-                                        <div className="text-sm font-medium uppercase tracking-wider text-gray-400">Hostname:</div>
-                                        <div className="text-white">{item.hostname}</div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2 mb-2">
-                                        <div className="text-sm font-medium uppercase tracking-wider text-gray-400">Date:</div>
-                                        <div className="text-white">{item.date}</div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="text-sm font-medium uppercase tracking-wider text-gray-400">Duration:</div>
-                                        <div className="text-white">{item.duration}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
-            
-            {activity?.activities && activity.activities.length > 2 && (
-                <div className="w-full max-w-6xl bg-black rounded-lg shadow-2xl overflow-hidden mt-6 transform transition-all duration-500 hover:scale-[1.01]">
-                    <button 
-                        onClick={handleToggleActivities} 
-                        className={`w-full py-4 text-lg font-medium uppercase tracking-wider bg-blue-900 text-white hover:bg-blue-800 transition-all duration-300 flex items-center justify-center group ${animating ? 'animate-pulse' : ''}`}
-                        disabled={animating}
+            <AnimatePresence>
+                <motion.div
+                    className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 transition-opacity duration-700 ease-in-out"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    {loading && <LoadingScreen />}
+                    <motion.div
+                        className="w-full max-w-4xl bg-white dark:bg-gray-900 overflow-hidden mt-5 shadow-lg rounded-lg transition-all duration-500"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
                     >
-                        <span className="transform transition-transform duration-300 group-hover:translate-y-[-2px]">
-                            {showAllActivities ? "Show Less" : "Show All Activities"}
-                        </span>
-                        <svg 
-                            className={`ml-2 w-5 h-5 transition-transform duration-500 ${showAllActivities ? 'rotate-180' : ''} ${animating ? 'animate-spin' : ''}`} 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24" 
-                            xmlns="http://www.w3.org/2000/svg"
+                        <div className="w-full text-gray-800 dark:text-white">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">Username</div>
+                                    <div className="text-lg">{activity?.username}</div>
+                                </div>
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">First Name</div>
+                                    <div className="text-lg">{activity?.firstName}</div>
+                                </div>
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">Last Name</div>
+                                    <div className="text-lg">{activity?.lastName}</div>
+                                </div>
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">Duration of Activity</div>
+                                    <div className="text-lg">{activity?.durationOfActivity}</div>
+                                </div>
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">Last Online</div>
+                                    <div className="text-lg">{activity?.lastOnline}</div>
+                                </div>
+                                <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                                    <div className="text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-gray-400">ID</div>
+                                    <div className="text-lg">{activity?.studentId}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                    
+                    {activity?.activities && activity.activities.length > 0 && (
+                        <motion.div
+                            className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden mt-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5 }}
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
-            )}
-        </div>
+                            <div className="w-full text-gray-800 dark:text-white">
+                                <h2 className="px-8 py-4 text-xl font-bold bg-gray-900">Activity History</h2>
+                                <div className="px-8 py-4 flex items-center">
+                                    <span className="mr-4 text-lg font-medium uppercase tracking-wider text-white">Sort by:</span>
+                                    <motion.select 
+                                        className="px-4 py-2 text-lg font-medium bg-gray-900 text-white hover:bg-blue-800 transition-colors duration-300 rounded border border-gray-700 md:mr-3 sm:mr-3"
+                                        onChange={(e) => {
+                                            const sortValue = e.target.value;
+                                            const sortedActivities = [...activity.activities].sort((a, b) => {
+                                                if (sortValue === "date_desc") {
+                                                    return Number(getStartDate(b.date)) - Number(getStartDate(a.date));
+                                                }
+                                                if (sortValue === "date_asc") {
+                                                    return Number(getStartDate(a.date)) - Number(getStartDate(b.date));
+                                                }
+                                                if (sortValue === "duration_desc") return parseDuration(b.duration) - parseDuration(a.duration);
+                                                if (sortValue === "duration_asc") return parseDuration(a.duration) - parseDuration(b.duration);
+                                                if (sortValue === "hostname") return a.hostname.localeCompare(b.hostname);
+                                                if (sortValue === "ip") return a.ip.localeCompare(b.ip);
+                                                return 0;
+                                            });
+                                            setActivity({ ...activity, activities: sortedActivities });
+                                        }}
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.3 }}
+                                        whileFocus={{ scale: 1.05 }}
+                                    >
+                                        <option value="date_desc">Date (Newest First)</option>
+                                        <option value="date_asc">Date (Oldest First)</option>
+                                        <option value="duration_desc">Duration (Longest First)</option>
+                                        <option value="duration_asc">Duration (Shortest First)</option>
+                                        <option value="hostname">Hostname</option>
+                                        <option value="ip">IP Address</option>
+                                    </motion.select>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                                    {(showAllActivities ? activity.activities : activity.activities.slice(0, 2)).map((item: any, index: number) => (
+                                        <motion.div 
+                                            key={item._id || index} 
+                                            className="flex flex-col p-4 border border-gray-200 dark:border-gray-800 rounded-lg bg-gray-100 dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 transition-all duration-300"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                                        >
+                                            <div className="grid grid-cols-2 gap-2 mb-2">
+                                                <div className="text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">IP:</div>
+                                                <div className="text-gray-800 dark:text-white">{item.ip}</div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 mb-2">
+                                                <div className="text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Hostname:</div>
+                                                <div className="text-gray-800 dark:text-white">{item.hostname}</div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 mb-2">
+                                                <div className="text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Date:</div>
+                                                <div className="text-gray-800 dark:text-white">{item.date}</div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="text-sm font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Duration:</div>
+                                                <div className="text-gray-800 dark:text-white">{item.duration}</div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                    
+                    {activity?.activities && activity.activities.length > 2 && (
+                        <motion.div
+                            className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden mt-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <button 
+                                onClick={handleToggleActivities} 
+                                className="w-full py-4 text-lg font-medium uppercase tracking-wider bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300 flex items-center justify-center"
+                            >
+                                <span>
+                                    {showAllActivities ? "Show Less" : "Show All Activities"}
+                                </span>
+                                <svg 
+                                    className={`ml-2 w-5 h-5 transition-transform duration-500 ${showAllActivities ? 'rotate-180' : ''}`} 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24" 
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </motion.div>
+                    )}
+                </motion.div>
+            </AnimatePresence>
         </ProtectedRoute>
     )
 }
