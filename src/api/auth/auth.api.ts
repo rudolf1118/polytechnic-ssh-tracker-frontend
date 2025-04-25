@@ -32,19 +32,13 @@ export class AuthApi {
 
     async verifyToken(): Promise<boolean> {
         try {
-            console.log("verifying token");
             const token = localStorage.getItem("token");
-            console.log(token);
             if (!token) return false;    
             const res = await axiosAuth.get("/auth/verify");
-            console.log(res);
             if (!res || !res.data) throw new Error("Failed to verify token");
-            console.log(res.data);
             if(res.data.data.verified) return true;
-            console.log("token is not verified");
             return false;
         } catch(e) {
-            console.log("error in verify token");
             return false;
         }
     }

@@ -17,7 +17,6 @@ export default function MyActivityPage() {
             try {
                 setLoading(true);
                 const res = await activityApi.getMyActivity();
-                console.log(res);
                 setActivity(res);
             } catch (error) {
                 console.error("Failed to fetch activity:", error);

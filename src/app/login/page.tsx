@@ -5,7 +5,7 @@ import { authApi } from "@/api/index";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import { useAuth } from "@/context/AuthContext";
-import ProtectedRoute from "@/components/Protected";
+import AlreadySignedIn from "@/components/AlreadySignedIn";
 
 interface LoginParams {
   username: string;
@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <ProtectedRoute>
+    <AlreadySignedIn>
     <div className="min-h-screen w-full overflow-hidden flex flex-col items-center justify-center p-4 bg-gradient-to-br from-gray-900 to-black">
         <div className="w-full max-w-md bg-gray-100 p-8 rounded-xl shadow-lg">
         {loading && <LoadingScreen />} 
@@ -68,6 +68,6 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
-    </ProtectedRoute>
+    </AlreadySignedIn>
   );
 }

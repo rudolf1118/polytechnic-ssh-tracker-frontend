@@ -22,7 +22,6 @@ export default function TopStudentsChart({
   data.forEach((item, index) => {
     item.Top = index + 1;
   })
-  console.log(data);
   return (
     <div className="w-full h-96 bg-white dark:bg-gray-900 p-4 rounded shadow">
       <h2 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">Top Students</h2>

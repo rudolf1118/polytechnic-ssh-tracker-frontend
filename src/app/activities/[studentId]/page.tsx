@@ -19,7 +19,6 @@ export default function ActivityPage() {
             try {
                 setLoading(true);
                 const res = await activityApi.getActivityById(studentId as string);
-                console.log(res);
                 setActivity(res);
             } catch (error) {
                 console.error("Failed to fetch activity:", error);

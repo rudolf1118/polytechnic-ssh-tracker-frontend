@@ -9,10 +9,8 @@ export function useAuth() {
 
   useEffect(() => {
     const verifyAuth = async () => {
-      console.log("Calling verifyToken");
       try {
         const ok = await authApi.verifyToken();
-        console.log("Result of verifyToken:", ok);
         setIsAuthenticated(ok);
       } catch (error) {
         console.error("Error verifying token:", error);
