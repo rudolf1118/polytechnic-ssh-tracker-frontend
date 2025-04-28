@@ -79,6 +79,10 @@ export default function SSHConnectionPage() {
       setVerifying(false);
     }
     verify();
+  
+    return () => {
+      disconnectSSH();
+    };
   }, []);
 
   return (
@@ -109,36 +113,36 @@ export default function SSHConnectionPage() {
               {/* Connection Info */}
               <div className="p-6 flex flex-col items-center gap-6">
                 <div className="flex items-center gap-3">
-                  <span className="font-medium text-lg">Status:</span>
+                  <span className="font-medium text-lg text-gray-700 dark:text-gray-500 light-black:text-gray-500">Status:</span>
                   {connecting ? (
-                    <span className="text-gray-500 font-semibold">Connecting...</span>
+                    <span className="text-gray-700 dark:text-gray-500 font-semibold">Connecting...</span>
                   ) : connected ? (
-                    <span className="text-green-500 font-semibold">Connected</span>
+                    <span className="text-green-700 dark:text-green-500 font-semibold">Connected</span>
                   ) : (
-                    <span className="text-red-500 font-semibold">Disconnected</span>
+                    <span className="text-red-700 dark:text-red-500 font-semibold">Disconnected</span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="font-medium text-lg">Verified:</span>
+                  <span className="font-medium text-lg text-gray-700 dark:text-gray-500 light-black:text-gray-500">Verified:</span>
                   {verifying ? (
-                    <span className="text-gray-500 font-semibold">Verifying...</span>
+                    <span className="text-gray-700 dark:text-gray-500 font-semibold">Verifying...</span>
                   ) : verified ? (
-                    <span className="text-green-500 font-semibold">Yes</span>
+                    <span className="text-green-700 dark:text-green-500 font-semibold">Yes</span>
                   ) : (
-                    <span className="text-red-500 font-semibold">No</span>
+                    <span className="text-red-700 dark:text-red-500 font-semibold">No</span>
                   )}
                 </div>
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-2 sm:gap-4">
                   <button
                     onClick={connectSSH}
-                    className="px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition duration-300"
+                    className="w-full sm:w-auto px-5 py-2 bg-green-700 hover:bg-green-800 text-white font-semibold rounded-lg transition duration-300"
                     disabled={!!connected}
                   >
                     {connected === null ? "Connect SSH" : "Reconnect SSH"}
                   </button>
                   <button
                     onClick={disconnectSSH}
-                    className="px-5 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition duration-300"
+                    className="w-full sm:w-auto px-5 py-2 bg-red-700 hover:bg-red-800 text-white font-semibold rounded-lg transition duration-300"
                     disabled={connected === null || !connected}
                   >
                     Disconnect SSH
@@ -156,7 +160,7 @@ export default function SSHConnectionPage() {
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="bg-light-primary dark:bg-dark-primary p-6 text-light-foreground dark:text-dark-foreground">
+                <div className="bg-light-primary dark:bg-dark-primary p-6 text-light-foreground dark:text-dark-foreground ">
                   <h2 className="text-xl font-bold">Execute SSH Command</h2>
                 </div>
                 <div className="p-6 flex flex-col gap-4">
@@ -165,16 +169,18 @@ export default function SSHConnectionPage() {
                     value={command}
                     onChange={(e) => setCommand(e.target.value)}
                     placeholder="Enter command"
-                    className="w-full p-3 rounded-lg bg-gray-100 dark:bg-dark-bg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border focus:ring-2 focus:ring-light-ring dark:focus:ring-dark-ring outline-none text-gray-800 dark:text-gray-200"
+                    onKeyDown={(e) => e.key === 'Enter' && executeCommand()}
                   />
                   <button
-                    onClick={executeCommand}
+                    type="submit"
                     className="px-5 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-300"
+                    onClick={executeCommand}
                   >
                     Execute
                   </button>
                   {commandOutput && (
-                    <div className="mt-4 p-4 bg-gray-200 dark:bg-dark-bg rounded-lg text-sm overflow-x-auto">
+                    <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-800 rounded-lg text-sm overflow-x-auto text-gray-800 dark:text-gray-200">
                       <pre>{commandOutput}</pre>
                     </div>
                   )}

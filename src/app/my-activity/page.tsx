@@ -76,7 +76,7 @@ export default function ProfilePage() {
               transition={{ duration: 0.5 }}
             >
               <button
-                onClick={() => router.push('/my-activity')}
+                onClick={() => router.push(`/activities/${profile?._id}`)}
                 className="w-full py-4 text-lg font-medium uppercase tracking-wider bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-300"
               >
                 View Your Activity History
