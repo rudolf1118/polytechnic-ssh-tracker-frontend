@@ -20,11 +20,12 @@ export default function Navbar() {
     { name: 'My Activity', href: '/my-activity' },
     { name: 'Students', href: '/students' },
     { name: 'Top Students', href: '/top-students' },
+    { name: 'SSH Terminal', href: '/ssh-connection' },
   ];
 
   return (
     <ProtectedRoute>
-      <nav className="bg-gradient-to-r from-blue-950 via-indigo-950 to-purple-950 text-white fixed w-full z-50 shadow-lg">
+      <nav className="bg-gradient-to-r from-blue-950 via-indigo-950 to-purple-950 text-white light-black:bg-gray-800 fixed w-full z-50 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <Link href="/" className="text-2xl font-bold tracking-tight hover:scale-105 transition-transform font-sans">
@@ -72,7 +73,7 @@ export default function Navbar() {
           leaveFrom="opacity-100 transform translate-y-0"
           leaveTo="opacity-0 transform -translate-y-2"
         >
-          <div className="md:hidden bg-gradient-to-r from-blue-950 via-indigo-950 to-purple-950 text-white px-4 pt-4 pb-6 space-y-2">
+          <div className="md:hidden bg-gradient-to-r from-blue-950 via-indigo-950 to-purple-950 text-white light-black:bg-gray-800 px-4 pt-4 pb-6 space-y-2">
             {isAuthenticated ? (
               navLinks.map(({ name, href }) => (
                 <Link

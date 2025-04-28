@@ -8,6 +8,7 @@ export class ActivityApi {
         try {
             const res = await axiosAuth.get("/activity/me");
             if (!res || !res.data) throw new Error("Failed to get activity");
+            console.log(res.data.data[0]);
             return res?.data?.data[0];
         } catch(e) {
             throw e;
@@ -29,6 +30,21 @@ export class ActivityApi {
             const res = await axiosAuth.get(`/activity/getTopParticipants?limit=${limit}`);
             if (!res || !res.data) throw new Error("Failed to get top participants");
             return res?.data?.data;
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    async syncUsersActivity(): Promise<any> {
+        try {
+            const res = await axiosAuth.get("/activity/syncUsersActivity");
+            if (!res || !res.data) throw new Error("Failed to sync users activity");
+            const { message } = res.data;
+            const {message: deepMessage} = res.data.data;
+            return {
+                message,
+                deepMessage
+            };
         } catch(e) {
             throw e;
         }

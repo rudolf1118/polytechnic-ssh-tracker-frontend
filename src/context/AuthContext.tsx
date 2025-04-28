@@ -6,6 +6,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   setIsAuthenticated: (value: boolean) => void;
+  role: 'admin' | 'user' | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -13,12 +14,13 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-
+  const [role, setRole] = useState<'admin' | 'user' | null>(null);
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const ok = await authApi.verifyToken();
-        setIsAuthenticated(ok);
+        const account = await authApi.verifyToken();
+        setIsAuthenticated(account.verified);
+        setRole(account.role as 'admin' | 'user' | null);
       } catch (error) {
         console.error("Error verifying token:", error);
         setIsAuthenticated(false);
@@ -31,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, setIsAuthenticated, role }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,9 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
-export default function TopStudentsChart({
-  data,
-}: {
+interface TopStudentsChartProps {
   data: {
     username: string;
     score: number;
@@ -16,7 +14,13 @@ export default function TopStudentsChart({
     lastOnline: string;
     Top: number;
   }[];
-}) {
+  onBarClick: (data: any) => void;
+}
+
+export default function TopStudentsChart({
+  data,
+  onBarClick,
+}: TopStudentsChartProps) {
   const router = useRouter();
 
   data.forEach((item, index) => {
@@ -36,8 +40,7 @@ export default function TopStudentsChart({
           }}
           onClick={(data) => {
             if (data && data.activePayload && data.activePayload[0]) {
-              const clickedData = data.activePayload[0].payload;
-              router.push(`/profile/${clickedData.studentId}`);
+              onBarClick(data.activePayload[0].payload);
             }
           }}
         >

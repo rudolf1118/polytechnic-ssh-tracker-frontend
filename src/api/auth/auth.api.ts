@@ -30,16 +30,59 @@ export class AuthApi {
         }
     }
 
-    async verifyToken(): Promise<boolean> {
+    async verifyToken(): Promise<{verified: boolean, role: string | null}> {
         try {
             const token = localStorage.getItem("token");
-            if (!token) return false;    
+            if (!token) return {verified: false, role: null};    
             const res = await axiosAuth.get("/auth/verify");
             if (!res || !res.data) throw new Error("Failed to verify token");
-            if(res.data.data.verified) return true;
+            if (res.data.data.verified && !res.data.data.role) res.data.data.role = 'user';
+            return res.data.data;
+        } catch(e) {
+            return { verified: false, role: null };
+        }
+    }
+
+    async verifyConnection(): Promise<any> {
+        try {
+            const res = await axiosAuth.get("/auth/connect");
+            if (res && res.status === 200) {
+                await axiosAuth.get("/auth/disconnect");
+                return true;
+            }
             return false;
         } catch(e) {
-            return false;
+            throw e;
+        }
+    }
+
+    async executeCommand(command: string): Promise<any> {
+        try {
+            const res = await axiosAuth.post("/auth/execute", { command });
+            const {message} = res.data;
+            const {stdout, stderr} = res.data?.data;
+            if (stdout || stderr) return {
+                stdout,
+                message,
+                stderr
+            }
+            return {
+                message,
+                stdout,
+                stderr
+            }
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    async connectConnection(): Promise<any> {
+        try {
+            const res = await axiosAuth.get("/auth/connect");
+            if (!res || !res.data) throw new Error("Failed to disconnect connection");
+            return res.data.data;
+        } catch(e) {
+            throw e;
         }
     }
     
