@@ -17,7 +17,6 @@ export default function ProfilePageByID() {
         const fetchProfile = async () => {
             setLoading(true);
             const res = await studentApi.getStudentById(id as string);
-            console.log(res);
             setProfile(res);
             setLoading(false);
         };

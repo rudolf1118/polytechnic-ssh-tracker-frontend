@@ -12,13 +12,14 @@ export default function TopStudentsPage() {
   const [limit, setLimit] = useState<number>(10);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedLab, setSelectedLab] = useState<string>("");
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await activityApi.getTopParticipants(limit);
+        const res = await activityApi.getTopParticipants(limit, selectedLab);
         setTopParticipants(res);
       } catch (e) {
         console.error(e);
@@ -27,7 +28,7 @@ export default function TopStudentsPage() {
       }
     };
     fetchData();
-  }, [limit]);
+  }, [limit, selectedLab]);
 
   const handleBarClick = (data: any) => {
     if (isMobile) {
@@ -42,7 +43,6 @@ export default function TopStudentsPage() {
       setLoading(true);
       // Fetch detailed data for the student
       const res = await activityApi.getActivityById(studentId);
-      console.log(res);
     } catch (e) {
       console.error(e);
     } finally {
@@ -101,6 +101,18 @@ export default function TopStudentsPage() {
               <option value="20">Top 20 Students</option>
               <option value="30">Top 30 Students</option>
               <option value="65">All Students</option>
+            </select>
+            <select
+              className="mt-2 w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              value={selectedLab}
+              onChange={(e) => setSelectedLab(e.target.value)}
+              disabled={loading}
+            >
+              <option value="all">All Labs</option>
+              <option value="lab-1">Lab 1</option>
+              <option value="lab-2">Lab 2</option>
+              <option value="lab-3">Lab 3</option>
+              <option value="lab-4">Lab 4</option>
             </select>
           </motion.div>
 

@@ -6,9 +6,11 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/Protected";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from "@/context/AuthContext";
 
 export default function StudentsPage() {
     const [students, setStudents] = useState<any[]>([]);
+    const { role } = useAuth();
     const [filteredStudents, setFilteredStudents] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [showAllActivities, setShowAllActivities] = useState<boolean>(false);
@@ -17,7 +19,7 @@ export default function StudentsPage() {
     const [search, setSearch] = useState<string>("");
     const [currentGroup, setCurrentGroup] = useState<"lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all">("");
 
-    const fetchStudents = async (group: "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all" = "") => {
+    const fetchStudents = async (group: "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all" = role === 'admin' ? "all" : "") => {
         try {
             setLoading(true);
             setCurrentGroup(group);
@@ -64,7 +66,7 @@ export default function StudentsPage() {
         <ProtectedRoute>
             <AnimatePresence>
                 <motion.div
-                    className="flex flex-col items-center justify-center min-h-screen p-4 w-full mt-5 bg-light-bg dark:bg-dark-bg"
+                    className="flex flex-col items-center justify-center min-h-screen p-4 w-full bg-light-bg dark:bg-dark-bg"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -85,19 +87,32 @@ export default function StudentsPage() {
                             value={currentGroup}
                             className="w-full sm:w-1/3 p-2 rounded-lg bg-light-secondary dark:bg-dark-secondary text-light-foreground dark:text-dark-foreground"
                             onChange={async (e) => {
-                                await fetchStudents(e.target.value as "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all");
+                                const selectedGroup = e.target.value as "lab-1" | "lab-2" | "lab-3" | "lab-4" | "" | "all";
+                                setCurrentGroup(selectedGroup);
+                                await fetchStudents(selectedGroup);
                             }}
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <option value="">My Group</option>
-                            <option value="lab-1">Lab 1</option>
-                            <option value="lab-2">Lab 2</option>
-                            <option value="lab-3">Lab 3</option>
-                            <option value="lab-4">Lab 4</option>
-                            <option value="all">All</option>
+                            {role === 'admin' ? (
+                                <>
+                                    <option value="all">All</option>
+                                    <option value="lab-1">Lab 1</option>
+                                    <option value="lab-2">Lab 2</option>
+                                    <option value="lab-3">Lab 3</option>
+                                    <option value="lab-4">Lab 4</option>
+                                </>
+                            ) : (
+                                <>
+                                    <option value="">My Group</option>
+                                    <option value="lab-1">Lab 1</option>
+                                    <option value="lab-2">Lab 2</option>
+                                    <option value="lab-3">Lab 3</option>
+                                    <option value="lab-4">Lab 4</option>
+                                </>
+                            )}
                         </motion.select>
                         <button 
                             className="bg-light-primary dark:bg-dark-primary text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-light-accent dark:hover:bg-dark-accent transition-colors w-full sm:w-auto" 

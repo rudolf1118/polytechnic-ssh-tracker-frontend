@@ -18,7 +18,6 @@ export class StudentApi {
         try {
             const res = await axiosAuth.get(`/student/search?id=${id}`);
             if (!res || !res.data) throw new Error("Failed to get student");
-            console.log(res?.data?.data);
             return res?.data?.data;
         } catch(e) {
             throw e;

@@ -90,9 +90,9 @@ export default function ActivityPage() {
                             transition={{ duration: 0.5 }}
                         >
                             <div className="w-full text-gray-800 dark:text-white light-black:text-gray-300">
-                                <h2 className="px-8 py-4 text-xl font-bold bg-gray-900 dark:bg-gray-800 light:bg-gray-300">Activity History</h2>
+                                <h2 className="px-8 py-4 text-xl font-bold text-white bg-gray-900 dark:bg-gray-800 light-black:bg-gray-700">Activity History</h2>
                                 <div className="px-8 py-4 flex items-center">
-                                    <span className="mr-4 text-lg font-medium uppercase tracking-wider text-white light-black:text-gray-300">Sort by:</span>
+                                    <span className="mr-4 text-lg font-medium uppercase tracking-wider text-black dark:text-white light-black:text-gray-300">Sort by:</span>
                                     <motion.select 
                                         className="px-4 py-2 text-lg font-medium bg-gray-900 text-white light-black:bg-gray-700 light-black:text-gray-300 hover:bg-blue-800 transition-colors duration-300 rounded border border-gray-700 md:mr-3 sm:mr-3"
                                         onChange={(e) => {

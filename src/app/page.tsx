@@ -63,7 +63,7 @@ export default function Home() {
       fetchActivitySummary();
     }
   }, [isAuthenticated]);
-  console.log(syncedData);
+
   return (
     <>
       <AnimatePresence>

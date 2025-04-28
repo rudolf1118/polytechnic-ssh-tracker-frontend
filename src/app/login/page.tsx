@@ -18,7 +18,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const { setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated, setRole } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const togglePasswordVisibility = () => {
@@ -28,8 +28,9 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginParams) => {
     try {
       setLoading(true);
-      await authApi.login(data);
+      const res = await authApi.login(data);
       setIsAuthenticated(true);
+      setRole(res.user.role || 'user');
       router.push("/");
     } catch (err) {
       setError("Password or Username is incorrect");

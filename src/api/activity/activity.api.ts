@@ -8,7 +8,6 @@ export class ActivityApi {
         try {
             const res = await axiosAuth.get("/activity/me");
             if (!res || !res.data) throw new Error("Failed to get activity");
-            console.log(res.data.data[0]);
             return res?.data?.data[0];
         } catch(e) {
             throw e;
@@ -25,9 +24,9 @@ export class ActivityApi {
         }
     }
 
-    async getTopParticipants(limit: number = 10): Promise<any> {
+    async getTopParticipants(limit: number = 10, group: string = "all"): Promise<any> {
         try {
-            const res = await axiosAuth.get(`/activity/getTopParticipants?limit=${limit}`);
+            const res = await axiosAuth.get(`/activity/getTopParticipants?limit=${limit}&group=${group || "all"}`);
             if (!res || !res.data) throw new Error("Failed to get top participants");
             return res?.data?.data;
         } catch(e) {

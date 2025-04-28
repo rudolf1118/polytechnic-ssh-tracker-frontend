@@ -40,7 +40,8 @@ export default function TopStudentsChart({
           }}
           onClick={(data) => {
             if (data && data.activePayload && data.activePayload[0]) {
-              onBarClick(data.activePayload[0].payload);
+              const clickedData = data.activePayload[0].payload;
+              router.push(`/profile/${clickedData.studentId}`);
             }
           }}
         >

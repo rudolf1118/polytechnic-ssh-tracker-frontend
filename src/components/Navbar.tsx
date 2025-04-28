@@ -11,7 +11,7 @@ import { Fragment } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, setIsAuthenticated, setRole, role } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,7 +46,11 @@ export default function Navbar() {
                   <span
                     key="logout"
                     className="cursor-pointer text-md font-medium hover:text-red-400 font-sans"
-                    onClick={() => { authApi.logout(); setIsAuthenticated(false); }}
+                    onClick={() => { 
+                      authApi.logout(); 
+                      setIsAuthenticated(false); 
+                      setRole(null);
+                    }}
                   >
                     Logout
                   </span>
@@ -88,7 +92,12 @@ export default function Navbar() {
                 <span
                   key="logout"
                   className="block cursor-pointer text-md font-medium text-red-300 hover:text-red-500 font-sans"
-                  onClick={() => { authApi.logout(); setIsAuthenticated(false); setMobileMenuOpen(false); }}
+                  onClick={() => { 
+                    authApi.logout(); 
+                    setIsAuthenticated(false); 
+                    setMobileMenuOpen(false); 
+                    setRole(null);
+                  }}
                 >
                   Logout
                 </span>

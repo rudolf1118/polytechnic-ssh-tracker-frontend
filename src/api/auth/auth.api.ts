@@ -22,7 +22,7 @@ export class AuthApi {
             if (!res || !res.data) throw new Error("Failed to login");
             if (res.data.data.token) {
                 localStorage.setItem("token", res.data.data.token);
-                return res.data;
+                return res.data.data;
             }
             throw new Error("Password or Username is incorrect");
         } catch(e) {
