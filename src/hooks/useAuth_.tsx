@@ -11,7 +11,7 @@ export function useAuth() {
     const verifyAuth = async () => {
       try {
         const ok = await authApi.verifyToken();
-        setIsAuthenticated(ok);
+        setIsAuthenticated(ok.verified);
       } catch (error) {
         console.error("Error verifying token:", error);
         setIsAuthenticated(false);
