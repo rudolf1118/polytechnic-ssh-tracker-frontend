@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'wb';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 
 interface TopStudentsChartProps {
   data: {
